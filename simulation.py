@@ -7,7 +7,6 @@ import pyrosim.pyrosim as pyrosim
 import constants as c
 
 
-
 class SIMULATION:
     def __init__(self):
         physicsClient = p.connect(p.GUI)
@@ -20,6 +19,7 @@ class SIMULATION:
         for i in range(c.simLength):
             p.stepSimulation()
             self.robot.Sense(i)
+            self.robot.Think()
             self.robot.Act(i)
             # backLegSensorValues[i] = pyrosim.Get_Touch_Sensor_Value_For_Link("BackLeg")
             # frontLegSensorValues[i] = pyrosim.Get_Touch_Sensor_Value_For_Link("FrontLeg")

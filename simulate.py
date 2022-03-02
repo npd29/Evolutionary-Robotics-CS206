@@ -4,6 +4,8 @@ import constants as c
 from simulation import SIMULATION
 
 
+
+
 # backLegSensorValues = numpy.zeros(1000)
 # frontLegSensorValues = numpy.zeros(1000)
 # frontAngles = numpy.zeros(1000)
