@@ -25,7 +25,7 @@ class SIMULATION:
             # frontLegSensorValues[i] = pyrosim.Get_Touch_Sensor_Value_For_Link("FrontLeg")
             # frontAngles[i] = c.frontAmp * numpy.sin(c.frontFreq * i / 100 + c.frontOffset)
             # backAngles[i] = c.backAmp * numpy.sin(c.backFreq * i / 100 + c.backOffset)
-            time.sleep(.0001)
+            time.sleep(.00001)
 
     def __del__(self):
         p.disconnect()
