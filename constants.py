@@ -7,4 +7,5 @@ backAmp = numpy.pi/4
 backFreq = 1
 backOffset = numpy.pi/4
 
-simLength = 100
+simLength = 1000
+numberOfGenerations = 25

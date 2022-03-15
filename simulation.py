@@ -8,8 +8,12 @@ import constants as c
 
 
 class SIMULATION:
-    def __init__(self):
-        physicsClient = p.connect(p.GUI)
+    def __init__(self, directOrGUI):
+        if directOrGUI == "GUI":
+            physicsClient = p.connect(p.GUI)
+        else:
+            physicsClient = p.connect(p.DIRECT)
+
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
         p.setGravity(0, 0, -9.8)
         self.world = WORLD()
@@ -26,6 +30,9 @@ class SIMULATION:
             # frontAngles[i] = c.frontAmp * numpy.sin(c.frontFreq * i / 100 + c.frontOffset)
             # backAngles[i] = c.backAmp * numpy.sin(c.backFreq * i / 100 + c.backOffset)
             time.sleep(.00001)
+
+    def Get_Fitness(self):
+        self.robot.Get_Fitness()
 
     def __del__(self):
         p.disconnect()

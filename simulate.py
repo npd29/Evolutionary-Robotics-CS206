@@ -2,6 +2,7 @@
 import numpy
 import constants as c
 from simulation import SIMULATION
+import sys
 
 
 
@@ -18,5 +19,8 @@ from simulation import SIMULATION
 # numpy.save("data/backAngles.npy", backAngles)
 #
 #
-simulation = SIMULATION()
+
+directOrGUI = sys.argv[1]
+simulation = SIMULATION(directOrGUI)
 simulation.Run()
+simulation.Get_Fitness()
