@@ -1,28 +1,29 @@
 import os
 import time
-
+from os.path import exists
 from motor import MOTOR
 from sensor import SENSOR
 import pybullet as p
 import pyrosim.pyrosim as pyrosim
+import constants as c
 import numpy
 from pyrosim.neuralNetwork import NEURAL_NETWORK
 
 
 class ROBOT:
     def __init__(self, solutionID):
-        self.nn = NEURAL_NETWORK("brain"+str(solutionID)+".nndf")
+        self.sensors = {}
+        self.motors = {}
         self.robot = p.loadURDF("body.urdf")
         pyrosim.Prepare_To_Simulate(self.robot)
         self.Prepare_To_Sense()
         self.Prepare_To_Act()
-        try:
-            os.system("rm brain"+str(solutionID)+".nndf")
-        except:
-            pass
+        if os.path.exists("brain"+str(solutionID)+".nndf"):
+            print("FILE EXISTS! CHECKED FOR FILE: ","brain"+str(solutionID)+".nndf")
+        self.nn = NEURAL_NETWORK("brain"+str(solutionID)+".nndf")
+        os.system("rm brain"+str(solutionID)+".nndf")
 
     def Prepare_To_Sense(self):
-        self.sensors = {}
         for linkName in pyrosim.linkNamesToIndices:
             self.sensors[linkName] = SENSOR(linkName)
 
@@ -31,7 +32,6 @@ class ROBOT:
             self.sensors[i].Get_Value(t)
 
     def Prepare_To_Act(self):
-        self.motors = {}
         for jointName in pyrosim.jointNamesToIndices:
             self.motors[jointName] = MOTOR(jointName)
 
@@ -39,7 +39,7 @@ class ROBOT:
         for neuronName in self.nn.Get_Neuron_Names():
             if self.nn.Is_Motor_Neuron(neuronName):
                 jointName = self.nn.Get_Motor_Neurons_Joint(neuronName)
-                desiredAngle = self.nn.Get_Value_Of(neuronName)
+                desiredAngle = self.nn.Get_Value_Of(neuronName) * c.motorJointRange
                 self.motors[jointName].Set_Value(self.robot, desiredAngle)
 
                 # print(neuronName, jointName, desiredAngle)
@@ -49,14 +49,13 @@ class ROBOT:
 
     def Think(self):
         self.nn.Update()
-        self.nn.Print()
+        # self.nn.Print()
 
     def Get_Fitness(self, solutionID):
         stateOfLinkZero = p.getLinkState(self.robot, 0)
         positionOfLinkZero = stateOfLinkZero[0]
         xCoorOfLinkZero = positionOfLinkZero[0]
         file = open("tmp" + str(solutionID) + ".txt", "w")
-        time.sleep(.01)
-        os.system("mv tmp" + str(solutionID) + ".txt fitness" + solutionID + ".txt")
         file.write(str(xCoorOfLinkZero))
         file.close()
+        os.system("mv tmp" + str(solutionID) + ".txt fitness" + str(solutionID) + ".txt")

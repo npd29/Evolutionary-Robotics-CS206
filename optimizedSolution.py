@@ -5,7 +5,7 @@ import numpy
 import pyrosim.pyrosim as pyrosim
 import os
 import constants as c
-class SOLUTION:
+class OPTOMIZED_SOLUTION:
 
     def __init__(self, nextAvailableID):
 
@@ -18,7 +18,8 @@ class SOLUTION:
         self.Create_World()
         self.Create_Body()
         self.Create_Brain()
-        os.system("python3 simulate.py " + directOrGUI + " " + str(self.myID) + " &")
+        os.system("python3 simulate.py " + directOrGUI + " " + str(self.myID) + " " + str(c.frontAmp) + " " + str(c.backAmp) + " " +
+                  str(c.frontFreq) + " " + str(c.backFreq) + " " + str(c.frontOffset) + " " + str(c.backOffset) + " " + str(c.motorJointRange) + " &")
 
     def Wait_For_Simulation_To_End(self, directOrGUI):
         fitnessFileName = "fitness" + str(self.myID) + ".txt"
@@ -112,15 +113,38 @@ class SOLUTION:
         print("VALUES:", c.variables[var], end=" ")
         if var == 0: # fitness
             pass
-        elif var == 1 or var == 2:
-            c.variables[var] = numpy.pi*random.random()
-        elif var == 3 or var == 4:
-            c.variables[var] = random.random()*10
-        elif var == 5 or var == 6:
-            c.variables[var] = random.random()
+        elif var == 1:
+            c.frontAmp = numpy.pi*random.random()
+        elif var == 2:
+            c.backAmp = numpy.pi*random.random()
+        elif var == 3:
+            c.frontFreq = random.random()*10
+        elif var == 4:
+            c.backFreq = random.random()*10
+        elif var == 5:
+            c.frontOffset = random.random()
+        elif var == 5:
+            c.backOffset = random.random()
         elif var == 7:
-            c.variables[var] = random.random()
+            c.motorJointRange = random.random()
 
     def Set_ID(self, newID):
         self.myID = newID
 
+    def Set_Vars(self, frontAmp, backAmp, frontFreq, backFreq, frontOffset, backOffset, motorJointRange):
+        c.frontAmp = frontAmp
+        c.backAmp = backAmp
+        c.frontFreq = frontFreq
+        c.backFreq = backFreq
+        c.frontOffset = frontOffset
+        c.backOffset = backOffset
+        c.motorJointRange = motorJointRange
+    #
+    # def Get_Vars(self):
+    #     c.frontAmp = self.front
+    #     c.backAmp = backAmp
+    #     c.frontFreq = frontFreq
+    #     c.backFreq = backFreq
+    #     c.frontOffset = frontOffset
+    #     c.backOffset = backOffset
+    #     c.motorJointRange = motorJointRange

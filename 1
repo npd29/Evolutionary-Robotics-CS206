@@ -1,0 +1,12 @@
+pybullet build time: Jan 18 2022 11:56:32
+b3Warning[examples/Importers/ImportURDFDemo/BulletUrdfImporter.cpp,126]:
+expected a world element, continuing without it.Traceback (most recent call last):
+  File "simulate.py", line 22, in <module>
+    simulation = SIMULATION(directOrGUI, solutionID)
+  File "/Users/noeldesmarais/PycharmProjects/CS206/simulation.py", line 22, in __init__
+    self.robot = ROBOT(solutionID)
+  File "/Users/noeldesmarais/PycharmProjects/CS206/robot.py", line 21, in __init__
+    self.nn = NEURAL_NETWORK("brain"+str(solutionID)+".nndf")
+  File "/Users/noeldesmarais/PycharmProjects/CS206/pyrosim/neuralNetwork.py", line 13, in __init__
+    f = open(nndfFileName,"r")
+FileNotFoundError: [Errno 2] No such file or directory: 'brain82.nndf'
