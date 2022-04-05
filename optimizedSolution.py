@@ -110,23 +110,30 @@ class OPTOMIZED_SOLUTION:
 
     def Mutate_Vars(self, var):
         print("MUTATING VARIABLE", var)
-        print("VALUES:", c.variables[var], end=" ")
+        print("VALUE:", c.variables[var], end=" ")
         if var == 0: # fitness
             pass
         elif var == 1:
             c.frontAmp = numpy.pi*random.random()
+            print(c.frontAmp)
         elif var == 2:
             c.backAmp = numpy.pi*random.random()
+            print(c.backAmp)
         elif var == 3:
             c.frontFreq = random.random()*10
+            print(c.frontFreq)
         elif var == 4:
             c.backFreq = random.random()*10
+            print(c.backFreq)
         elif var == 5:
             c.frontOffset = random.random()
+            print(c.frontOffset)
         elif var == 6:
             c.backOffset = random.random()
+            print(c.backOffset)
         elif var == 7:
             c.motorJointRange = random.random()
+            print(c.motorJointRange)
 
     def Set_ID(self, newID):
         self.myID = newID
@@ -139,12 +146,4 @@ class OPTOMIZED_SOLUTION:
         c.frontOffset = frontOffset
         c.backOffset = backOffset
         c.motorJointRange = motorJointRange
-    #
-    # def Get_Vars(self):
-    #     c.frontAmp = self.front
-    #     c.backAmp = backAmp
-    #     c.frontFreq = frontFreq
-    #     c.backFreq = backFreq
-    #     c.frontOffset = frontOffset
-    #     c.backOffset = backOffset
-    #     c.motorJointRange = motorJointRange
+

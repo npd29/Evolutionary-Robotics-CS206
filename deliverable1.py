@@ -50,9 +50,7 @@ class PHC_BEST:
 
     def Select(self):
         for i in self.parents:
-            print("CHECKING PARENT VS CHILD:", self.parents[i].fitness, self.children[i].fitness, end="")
             if self.parents[i].fitness < self.children[i].fitness:
-                print("TRUE")
                 self.parents[i] = self.children[i]
 
 
@@ -85,14 +83,13 @@ class PHC_BEST:
             for robot in robotReader:
                 c.populationSize += 1
                 self.parents[i] = OPTOMIZED_SOLUTION(self.nextAvailableID)
-                print("OLD:", c.motorJointRange, )
+                # print("OLD:", c.motorJointRange, )
                 self.parents[i].Set_Vars(float(robot['frontAmp']), float(robot['backAmp']), float(robot['frontFreq']),
                                          float(robot['backFreq']), float(robot['frontOffset']), float(robot['backOffset']),
                                          float(robot['motorJointRange']))
                 self.nextAvailableID += 1
                 i += 1
-                print("NEW:", c.motorJointRange)
-                print("NEXT ID: ", self.nextAvailableID)
+
 
     def saveData(self):
         row = [c.fitness, c.frontAmp, c.backAmp, c.frontFreq, c.backFreq, c.frontOffset, c.backOffset, c.motorJointRange]

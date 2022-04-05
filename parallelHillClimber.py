@@ -4,7 +4,6 @@ import os
 from solution import SOLUTION
 import constants as c
 import copy
-import readData as d
 
 
 class PARALLEL_HILL_CLIMBER:
@@ -66,7 +65,6 @@ class PARALLEL_HILL_CLIMBER:
                 bestFit = i
         c.fitness = self.parents[bestFit].fitness
         self.parents[bestFit].Start_Simulation("GUI")
-        d.saveData()
 
     def Evaluate(self, solutions):
         for i in range(c.populationSize):

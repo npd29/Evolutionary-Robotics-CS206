@@ -112,14 +112,20 @@ class SOLUTION:
         print("VALUES:", c.variables[var], end=" ")
         if var == 0: # fitness
             pass
-        elif var == 1 or var == 2:
-            c.variables[var] = numpy.pi*random.random()
-        elif var == 3 or var == 4:
-            c.variables[var] = random.random()*10
-        elif var == 5 or var == 6:
-            c.variables[var] = random.random()
+        elif var == 1:
+            c.frontAmp = numpy.pi*random.random()
+        elif var == 2:
+            c.backAmp = numpy.pi*random.random()
+        elif var == 3:
+            c.frontFreq = random.random()*10
+        elif var == 4:
+            c.backFreq = random.random()*10
+        elif var == 5:
+            c.frontOffset = random.random()
+        elif var == 6:
+            c.backOffset = random.random()
         elif var == 7:
-            c.variables[var] = random.random()
+            c.motorJointRange = random.random()
 
     def Set_ID(self, newID):
         self.myID = newID

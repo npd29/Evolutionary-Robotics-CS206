@@ -18,8 +18,8 @@ class ROBOT:
         pyrosim.Prepare_To_Simulate(self.robot)
         self.Prepare_To_Sense()
         self.Prepare_To_Act()
-        if os.path.exists("brain"+str(solutionID)+".nndf"):
-            print("FILE EXISTS! CHECKED FOR FILE: ","brain"+str(solutionID)+".nndf")
+        # if os.path.exists("brain"+str(solutionID)+".nndf"):
+        #     print("FILE EXISTS! CHECKED FOR FILE: ","brain"+str(solutionID)+".nndf")
         self.nn = NEURAL_NETWORK("brain"+str(solutionID)+".nndf")
         os.system("rm brain"+str(solutionID)+".nndf")
 

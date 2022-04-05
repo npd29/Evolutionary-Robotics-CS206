@@ -18,12 +18,10 @@ class SIMULATION:
 
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
         p.setGravity(0, 0, -9.8)
-        print("SOLUTIONID:", solutionID)
         self.world = WORLD()
         self.robot = ROBOT(solutionID)
 
     def Run(self):
-        print("RUNNING")
         for i in range(c.simLength):
             if self.directOrGUI == 'GUI':
                 time.sleep(.001)
