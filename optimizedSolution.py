@@ -123,7 +123,7 @@ class OPTOMIZED_SOLUTION:
             c.backFreq = random.random()*10
         elif var == 5:
             c.frontOffset = random.random()
-        elif var == 5:
+        elif var == 6:
             c.backOffset = random.random()
         elif var == 7:
             c.motorJointRange = random.random()

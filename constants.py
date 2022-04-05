@@ -10,7 +10,7 @@ backFreq = 1
 backOffset = .2
 
 simLength = 1000
-numberOfGenerations = 10
+numberOfGenerations = 3
 populationSize = 10
 
 numSensorNeurons = 4
