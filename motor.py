@@ -14,7 +14,6 @@ class MOTOR:
         self.amplitude = c.frontAmp
         self.frequency = c.frontFreq
         self.offset = c.frontOffset
-        # TODO: change this back to torso backleg
         if self.jointName == "Torso_BackLeg":
             self.frequency /= 2
         for i in range(c.simLength):
@@ -26,7 +25,7 @@ class MOTOR:
             jointName=self.jointName,
             controlMode=p.POSITION_CONTROL,
             targetPosition=desiredAngle,
-            maxForce=20)
+            maxForce=50)
 
     def Save_Values(self):
         numpy.save("data/motorValues.npy", self.motorValues)

@@ -7,16 +7,16 @@ frontFreq = 1
 frontOffset = 0
 backAmp = numpy.pi/4
 backFreq = 1
-backOffset = .2
+backOffset = 0
 
 simLength = 1000
-numberOfGenerations = 3
+numberOfGenerations = 10
 populationSize = 10
 
 numSensorNeurons = 4
 numMotorNeurons = 8
 
-motorJointRange = .5
+motorJointRange = .9
 
 variables = [fitness, frontAmp, backAmp, frontFreq, backFreq, frontOffset, backOffset, motorJointRange]
 

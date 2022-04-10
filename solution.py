@@ -105,7 +105,7 @@ class SOLUTION:
         row = random.randint(0, 2)
         col = random.randint(0, 1)
         self.weights[row][col] = random.random() * 2 - 1
-        self.Mutate_Vars(random.randint(0, 7))
+        # self.Mutate_Vars(random.randint(0, 7))
 
     def Mutate_Vars(self, var):
         print("MUTATING VARIABLE", var)

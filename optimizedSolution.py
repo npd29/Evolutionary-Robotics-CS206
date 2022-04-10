@@ -113,24 +113,28 @@ class OPTOMIZED_SOLUTION:
         print("VALUE:", c.variables[var], end=" ")
         if var == 0: # fitness
             pass
-        elif var == 1:
-            c.frontAmp = numpy.pi*random.random()
+        elif var == 1 or var==2:
+            r = numpy.pi*random.random()
+            c.frontAmp = r
+            c.backAmp = r
             print(c.frontAmp)
-        elif var == 2:
-            c.backAmp = numpy.pi*random.random()
-            print(c.backAmp)
-        elif var == 3:
-            c.frontFreq = random.random()*10
+        # elif var == 2:
+        #     c.backAmp = numpy.pi*random.random()
+        #     print(c.backAmp)
+        elif var == 3 or var == 4:
+            r = random.random()*10
+            c.frontFreq = r
+            c.backFreq = r
             print(c.frontFreq)
-        elif var == 4:
-            c.backFreq = random.random()*10
-            print(c.backFreq)
-        elif var == 5:
-            c.frontOffset = random.random()
-            print(c.frontOffset)
-        elif var == 6:
-            c.backOffset = random.random()
-            print(c.backOffset)
+        # elif var == 4:
+        #     c.backFreq = random.random()*10
+        #     print(c.backFreq)
+        # elif var == 5:
+        #     c.frontOffset = random.random()
+        #     print(c.frontOffset)
+        # elif var == 6:
+        #     c.backOffset = random.random()
+        #     print(c.backOffset)
         elif var == 7:
             c.motorJointRange = random.random()
             print(c.motorJointRange)
