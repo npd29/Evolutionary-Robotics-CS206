@@ -6,6 +6,8 @@ import constants as c
 import copy
 import csv
 import numpy
+import time
+import random
 
 class PHC_BEST:
     def __init__(self):
@@ -22,7 +24,6 @@ class PHC_BEST:
         self.nextAvailableID = 0
         # Simulate all 10 robots
         self.getFile()
-
 
     def Evolve(self):
         self.Evaluate(self.parents)
@@ -53,11 +54,9 @@ class PHC_BEST:
             if self.parents[i].fitness < self.children[i].fitness:
                 self.parents[i] = self.children[i]
 
-
     def Print(self):
         for i in self.parents.keys():
             print("\n", self.parents[i].fitness, self.children[i].fitness, "\n")
-
 
     def Show_Best(self):
         bestFit = 0
@@ -66,8 +65,9 @@ class PHC_BEST:
                 bestFit = i
         c.fitness = self.parents[bestFit].fitness
         print("FINAL FITNESS:", c.fitness)
+        input("Press enter to show the evoloved robot")
         self.parents[bestFit].Start_Simulation("GUI")
-        self.saveData()
+        self.saveData(bestFit)
 
     def Evaluate(self, solutions):
         for i in range(c.populationSize):
@@ -79,9 +79,9 @@ class PHC_BEST:
         with open('data/fitnessData.csv', newline='') as readFile:
             robotReader = csv.DictReader(readFile, delimiter=',')
             i=0
-            c.populationSize = 0
+            population = 0
             for robot in robotReader:
-                c.populationSize += 1
+                population += 1
                 self.parents[i] = OPTOMIZED_SOLUTION(self.nextAvailableID)
                 # print("OLD:", c.motorJointRange, )
                 self.parents[i].Set_Vars(float(robot['frontAmp']), float(robot['backAmp']), float(robot['frontFreq']),
@@ -89,12 +89,48 @@ class PHC_BEST:
                                          float(robot['motorJointRange']))
                 self.nextAvailableID += 1
                 i += 1
+            while population < c.populationSize:
+                self.parents[i] = OPTOMIZED_SOLUTION(self.nextAvailableID)
+                self.parents[i].Set_Vars(numpy.pi*random.random(), numpy.pi*random.random(), random.random()*10,
+                                         random.random()*10, random.random(),
+                                         random.random(),
+                                         random.random())
+                population += 1
+                self.nextAvailableID += 1
+                i += 1
 
 
-    def saveData(self):
-        row = [c.fitness, c.frontAmp, c.backAmp, c.frontFreq, c.backFreq, c.frontOffset, c.backOffset, c.motorJointRange]
-        with open('data/fitnessData.csv', 'a', encoding='UTF8', newline='') as f:
-            writer = csv.writer(f)
-            writer.writerow(row)
+    def saveData(self, best):
+        with open('data/fitnessData.csv', newline='') as readFile:
+            robotReader = csv.reader(readFile, delimiter=',')
+            reader = list(csv.reader(readFile))
+            i = 1
+            pos = 0
+            row = [c.fitness, c.frontAmp, c.backAmp, c.frontFreq, c.backFreq, c.frontOffset, c.backOffset,
+                   c.motorJointRange]
+            for robot in reader:
+                if i != 1:
+                    if self.parents[best].fitness > float(robot[0]):
+                        break
+                i += 1
+            reader.insert(i-1, row)
 
-        numpy.save("./data/NN Weights/" + str(c.saveID) + ".npy", c.weights)
+        with open('data/fitnessData.csv', "w") as outfile:
+            writer = csv.writer(outfile)
+            j = 1
+            for line in reader:
+                if j <= 10:
+                    writer.writerow(line)
+                j += 1
+
+        if i <= 10: #if the new robot is in the top 10
+            numpy.save("data/NNWeights/hold.npy", c.weights)
+            for num in range(9, i, -1):
+                if not os.path.exists("./data/NNWeights/weights"+str(num)+".npy"):
+                    numpy.save("data/NNWeights/weights"+str(num)+".npy", c.weights)
+                os.system("mv data/NNWeights/weights" + str(num) + ".npy data/NNWeights/weights" + str(num+1) + ".npy")
+
+            while not os.path.exists("data/NNWeights/hold.npy"):
+                # print(fitnessFileName)
+                time.sleep(0.1)
+            os.system("mv data/NNWeights/hold.npy data/NNWeights/weights" + str(i) + ".npy")

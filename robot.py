@@ -54,8 +54,8 @@ class ROBOT:
     def Get_Fitness(self, solutionID):
         stateOfLinkZero = p.getLinkState(self.robot, 0)
         positionOfLinkZero = stateOfLinkZero[0]
-        zCoorOfLinkZero = positionOfLinkZero[2]
+        xCoorOfLinkZero = positionOfLinkZero[0]
         file = open("tmp" + str(solutionID) + ".txt", "w")
-        file.write(str(zCoorOfLinkZero))
+        file.write(str(xCoorOfLinkZero))
         file.close()
         os.system("mv tmp" + str(solutionID) + ".txt fitness" + str(solutionID) + ".txt")
