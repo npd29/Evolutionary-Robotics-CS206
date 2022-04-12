@@ -7,11 +7,17 @@ import os
 import constants as c
 class OPTOMIZED_SOLUTION:
 
-    def __init__(self, nextAvailableID):
+    def __init__(self, nextAvailableID, recreateID):
 
         self.myID = nextAvailableID
-        self.weights = numpy.random.rand(c.numSensorNeurons, c.numMotorNeurons)
-        self.weights = self.weights * 2 - 1
+        if recreateID > 10:
+            self.weights = numpy.random.rand(c.numSensorNeurons, c.numMotorNeurons)
+            self.weights = self.weights * 2 - 1
+        else:
+            try:
+                self.weights = numpy.load("data/NNWeights/weights"+str(recreateID)+".npy")
+            except FileNotFoundError:
+                self.weights = numpy.load("data/NNWeights/weights" + str(recreateID+1) + ".npy")
         c.weights = self.weights
 
     def Start_Simulation(self, directOrGUI):
@@ -112,19 +118,27 @@ class OPTOMIZED_SOLUTION:
         print("MUTATING VARIABLE", var)
         print("VALUE:", c.variables[var], end=" ")
         if var == 0: # fitness
-            pass
+            print()
 
-        elif var == 1 or var==2:
+        elif var == 1 or var == 2:
             r = numpy.pi*random.random()
             c.frontAmp = r
             c.backAmp = r
             print(c.frontAmp)
 
-        elif var == 3 or var == 4:
-            r = random.random()*100
+        # elif var == 2:
+        #     r = numpy.pi * random.random()
+        #     print(c.backAmp)
+
+        elif var == 3:
+            r = random.random()*10
             c.frontFreq = r
-            c.backFreq = r
             print(c.frontFreq)
+
+        elif var == 4:
+            r = random.random()*10
+            c.backFreq = r
+            print(c.backFreq)
 
         elif var == 5:
             c.frontOffset = random.random()*10

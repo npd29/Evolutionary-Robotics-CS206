@@ -9,7 +9,7 @@ backAmp = numpy.pi/4
 backFreq = 1
 backOffset = 0
 
-simLength = 1000
+simLength = 10000
 numberOfGenerations = 10
 
 populationSize = 10
