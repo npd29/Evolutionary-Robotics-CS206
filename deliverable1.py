@@ -87,16 +87,18 @@ class PHC_BEST:
                 population += 1
                 self.parents[i] = OPTOMIZED_SOLUTION(self.nextAvailableID, i)
                 # print("OLD:", c.motorJointRange, )
-                self.parents[i].Set_Vars(float(robot['frontAmp']), float(robot['backAmp']), float(robot['frontFreq']),
-                                         float(robot['backFreq']), float(robot['frontOffset']), float(robot['backOffset']),
+                self.parents[i].Set_Vars(float(robot['frontLeftAmp']), float(robot['frontRightAmp']), float(robot['backLeftAmp']),
+                                         float(robot['backRightAmp']), float(robot['frontLeftFreq']), float(robot['frontRightFreq']),
+                                         float(robot['backLeftFreq']), float(robot['backRightFreq']), float(robot['frontLeftOffset']),
+                                         float(robot['frontRightOffset']), float(robot['backOffset']), float(robot['backRightOffset']),
                                          float(robot['motorJointRange']))
                 self.nextAvailableID += 1
                 i += 1
             while population < c.populationSize:
                 self.parents[i] = OPTOMIZED_SOLUTION(self.nextAvailableID, 11)
-                self.parents[i].Set_Vars(numpy.pi*random.random(), numpy.pi*random.random(), random.random()*10,
-                                         random.random()*10, random.random(),
-                                         random.random(),
+                self.parents[i].Set_Vars(numpy.pi*random.random(), numpy.pi*random.random(), numpy.pi*random.random(), numpy.pi*random.random(),
+                                         random.random()*10, random.random()*10, random.random()*10, random.random()*10,
+                                         random.random(), random.random(), random.random(), random.random(),
                                          random.random())
                 population += 1
                 self.nextAvailableID += 1
@@ -109,8 +111,8 @@ class PHC_BEST:
             reader = list(csv.reader(readFile))
             i = 1
             pos = 0
-            row = [c.fitness, c.frontAmp, c.backAmp, c.frontFreq, c.backFreq, c.frontOffset, c.backOffset,
-                   c.motorJointRange]
+            row = [c.fitness, c.frontLeftAmp, c.frontRightAmp, c.backLeftAmp, c.backRightAmp, c.frontLeftFreq, c.frontRightFreq, c.backLeftFreq,
+             c.backRightFreq, c.frontLeftOffset, c.frontRightOffset, c.backLeftOffset, c.backRightOffset, c.motorJointRange]
             for robot in reader:
                 if i != 1:
                     if self.parents[best].fitness > float(robot[0]):

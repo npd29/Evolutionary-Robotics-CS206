@@ -48,55 +48,55 @@ class OPTOMIZED_SOLUTION:
         pyrosim.Send_Cube(name="Torso", pos=[0, 0, 1], size=[1, 1, 1])
 
         #UPPER LEGS
-        pyrosim.Send_Joint(name="Torso_FrontLeg", parent="Torso", child="FrontLeg", type="revolute",
+        pyrosim.Send_Joint(name="Torso_FLU", parent="Torso", child="FLU", type="revolute",
                            position=[0, .5, 1], jointAxis="1 0 0")
-        pyrosim.Send_Cube(name="FrontLeg", pos=[0, .5, 0], size=[0.2, 1, 0.2])
+        pyrosim.Send_Cube(name="FLU", pos=[0, .5, 0], size=[0.2, 1, 0.2])
 
-        pyrosim.Send_Joint(name="Torso_BackLeg", parent="Torso", child="BackLeg", type="revolute",
+        pyrosim.Send_Joint(name="Torso_BLU", parent="Torso", child="BLU", type="revolute",
                            position=[0, -0.5, 1], jointAxis="1 0 0")
-        pyrosim.Send_Cube(name="BackLeg", pos=[0, -0.5, 0], size=[0.2, 1, 0.2])
+        pyrosim.Send_Cube(name="BLU", pos=[0, -0.5, 0], size=[0.2, 1, 0.2])
 
-        pyrosim.Send_Joint(name="Torso_LeftLeg", parent="Torso", child="LeftLeg", type="revolute",
+        pyrosim.Send_Joint(name="Torso_FRU", parent="Torso", child="FRU", type="revolute",
                            position=[-0.5, 0, 1], jointAxis="0 1 0")
-        pyrosim.Send_Cube(name="LeftLeg", pos=[-0.5, 0, 0], size=[1, 0.2, 0.2])
+        pyrosim.Send_Cube(name="FRU", pos=[-0.5, 0, 0], size=[1, 0.2, 0.2])
 
-        pyrosim.Send_Joint(name="Torso_RightLeg", parent="Torso", child="RightLeg", type="revolute",
+        pyrosim.Send_Joint(name="Torso_BRU", parent="Torso", child="BRU", type="revolute",
                            position=[0.5, 0, 1], jointAxis="0 1 0")
-        pyrosim.Send_Cube(name="RightLeg", pos=[0.5, 0, 0], size=[1, 0.2, 0.2])
+        pyrosim.Send_Cube(name="BRU", pos=[0.5, 0, 0], size=[1, 0.2, 0.2])
 
         #LOWER LEGS
-        pyrosim.Send_Joint(name="FrontLeg_FrontLower", parent="FrontLeg", child="FrontLower", type="revolute",
+        pyrosim.Send_Joint(name="FLU_FLL", parent="FLU", child="FLL", type="revolute",
                            position=[0, 1, 0], jointAxis="1 0 0")
-        pyrosim.Send_Cube(name="FrontLower", pos=[0, 0, -.5], size=[0.2, 0.2, 1])
+        pyrosim.Send_Cube(name="FLL", pos=[0, 0, -.5], size=[0.2, 0.2, 1])
 
-        pyrosim.Send_Joint(name="BackLeg_BackLower", parent="BackLeg", child="BackLower", type="revolute",
+        pyrosim.Send_Joint(name="BLU_BLL", parent="BLU", child="BLL", type="revolute",
                            position=[0, -1, 0], jointAxis="1 0 0")
-        pyrosim.Send_Cube(name="BackLower", pos=[0, 0, -.5], size=[0.2, 0.2, 1])
+        pyrosim.Send_Cube(name="BLL", pos=[0, 0, -.5], size=[0.2, 0.2, 1])
 
-        pyrosim.Send_Joint(name="LeftLeg_LeftLower", parent="LeftLeg", child="LeftLower", type="revolute",
+        pyrosim.Send_Joint(name="FRU_FRL", parent="FRU", child="FRL", type="revolute",
                            position=[-1, 0, 0], jointAxis="0 1 0")
-        pyrosim.Send_Cube(name="LeftLower", pos=[0, 0, -.5], size=[0.2, 0.2, 1])
+        pyrosim.Send_Cube(name="FRL", pos=[0, 0, -.5], size=[0.2, 0.2, 1])
 
-        pyrosim.Send_Joint(name="RightLeg_RightLower", parent="RightLeg", child="RightLower", type="revolute",
+        pyrosim.Send_Joint(name="BRU_BRL", parent="BRU", child="BRL", type="revolute",
                            position=[1, 0, 0], jointAxis="0 1 0")
-        pyrosim.Send_Cube(name="RightLower", pos=[0, 0, -.5], size=[0.2, 0.2, 1])
+        pyrosim.Send_Cube(name="BRL", pos=[0, 0, -.5], size=[0.2, 0.2, 1])
 
         pyrosim.End()
 
     def Create_Brain(self):
         pyrosim.Start_NeuralNetwork("brain" + str(self.myID) + ".nndf")
-        pyrosim.Send_Sensor_Neuron(name=0, linkName="FrontLower")
-        pyrosim.Send_Sensor_Neuron(name=1, linkName="BackLower")
-        pyrosim.Send_Sensor_Neuron(name=2, linkName="LeftLower")
-        pyrosim.Send_Sensor_Neuron(name=3, linkName="RightLower")
-        pyrosim.Send_Motor_Neuron(name=4, jointName="Torso_BackLeg")
-        pyrosim.Send_Motor_Neuron(name=5, jointName="Torso_FrontLeg")
-        pyrosim.Send_Motor_Neuron(name=6, jointName="Torso_LeftLeg")
-        pyrosim.Send_Motor_Neuron(name=7, jointName="Torso_RightLeg")
-        pyrosim.Send_Motor_Neuron(name=8, jointName="BackLeg_BackLower")
-        pyrosim.Send_Motor_Neuron(name=9, jointName="FrontLeg_FrontLower")
-        pyrosim.Send_Motor_Neuron(name=10, jointName="LeftLeg_LeftLower")
-        pyrosim.Send_Motor_Neuron(name=11, jointName="RightLeg_RightLower")
+        pyrosim.Send_Sensor_Neuron(name=0, linkName="FLL")
+        pyrosim.Send_Sensor_Neuron(name=1, linkName="BLL")
+        pyrosim.Send_Sensor_Neuron(name=2, linkName="FRL")
+        pyrosim.Send_Sensor_Neuron(name=3, linkName="BRL")
+        pyrosim.Send_Motor_Neuron(name=4, jointName="Torso_BLU")
+        pyrosim.Send_Motor_Neuron(name=5, jointName="Torso_FLU")
+        pyrosim.Send_Motor_Neuron(name=6, jointName="Torso_FRU")
+        pyrosim.Send_Motor_Neuron(name=7, jointName="Torso_BRU")
+        pyrosim.Send_Motor_Neuron(name=8, jointName="BLU_BLL")
+        pyrosim.Send_Motor_Neuron(name=9, jointName="FLU_FLL")
+        pyrosim.Send_Motor_Neuron(name=10, jointName="FRU_FRL")
+        pyrosim.Send_Motor_Neuron(name=11, jointName="BRU_BRL")
 
         for currentRow in range(c.numSensorNeurons):
                 for currentColumn in range(c.numMotorNeurons):
@@ -112,23 +112,38 @@ class OPTOMIZED_SOLUTION:
         row = random.randint(0, 2)
         col = random.randint(0, 1)
         self.weights[row][col] = random.random() * 2 - 1
-        self.Mutate_Vars(random.randint(0, 7))
+        self.Mutate_Vars(random.randint(0, 26))
 
     def Mutate_Vars(self, var):
         print("MUTATING VARIABLE", var)
         print("VALUE:", c.variables[var], end=" ")
         if var == 0: # fitness
             print()
-
-        elif var == 1 or var == 2:
+        #vars 1-4 are upper amps
+        elif var == 1 or var == 2:#front
             r = numpy.pi*random.random()
-            c.frontAmp = r
-            c.backAmp = r
+            c.FLUAmp = r
+            c.FRUAmp = r
             print(c.frontAmp)
 
-        # elif var == 2:
-        #     r = numpy.pi * random.random()
-        #     print(c.backAmp)
+        elif var == 3 or var == 4:#back
+            r = numpy.pi*random.random()
+            c.BLUAmp = r
+            c.BRUAmp = r
+            print(c.frontAmp)
+
+        #5-8 are lower amps
+        elif var == 5 or var == 6:#front
+            r = numpy.pi*random.random()
+            c.FLLAmp = r
+            c.FRLAmp = r
+            print(c.frontAmp)
+
+        elif var == 5 or var == 6:#back
+            r = numpy.pi*random.random()
+            c.BLUAmp = r
+            c.BRUAmp = r
+            print(c.frontAmp)
 
         elif var == 3:
             r = random.random()*10

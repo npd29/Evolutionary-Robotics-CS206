@@ -11,9 +11,14 @@ class MOTOR:
         self.Prepare_To_Act()
 
     def Prepare_To_Act(self):
-        self.amplitude = c.frontAmp
-        self.frequency = c.frontFreq
-        self.offset = c.frontOffset
+        if self.jointName == "Torso_FLU":
+            self.amplitude = c.FLUAmp
+            self.frequency = c.frontLeftFreq
+            self.offset = c.frontLeftOffset
+        elif self.jointName == "Torso_LeftLeg":
+            self.amplitude = c.frontLeftAmp
+            self.frequency = c.frontLeftFreq
+            self.offset = c.frontLeftOffset
         if self.jointName == "Torso_BackLeg":
             self.frequency /= 2
         for i in range(c.simLength):
