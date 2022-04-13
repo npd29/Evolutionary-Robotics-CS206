@@ -5,6 +5,8 @@ import numpy
 import pyrosim.pyrosim as pyrosim
 import os
 import constants as c
+
+
 class OPTOMIZED_SOLUTION:
 
     def __init__(self, nextAvailableID, recreateID):
@@ -15,22 +17,25 @@ class OPTOMIZED_SOLUTION:
             self.weights = self.weights * 2 - 1
         else:
             try:
-                self.weights = numpy.load("data/NNWeights/weights"+str(recreateID)+".npy")
+                self.weights = numpy.load("data/NNWeights/weights" + str(recreateID) + ".npy")
+                print("FILE FOUND")
             except FileNotFoundError:
-                self.weights = numpy.load("data/NNWeights/weights" + str(recreateID+1) + ".npy")
+                self.weights = numpy.load("data/NNWeights/weights" + str(recreateID + 1) + ".npy")
+                print("FILE NOT FOUND")
         c.weights = self.weights
+        # print(c.weights)
 
     def Start_Simulation(self, directOrGUI):
         self.Create_World()
         self.Create_Body()
         self.Create_Brain()
-        os.system("python3 simulate.py " + directOrGUI + " " + str(self.myID) + " " + str(c.frontAmp) + " " + str(c.backAmp) + " " +
-                  str(c.frontFreq) + " " + str(c.backFreq) + " " + str(c.frontOffset) + " " + str(c.backOffset) + " " + str(c.motorJointRange) + " &")
+        output = self.Output_Vars()
+        os.system("python3 simulate.py " + directOrGUI + " " + str(self.myID) + " " + output + " &")
 
     def Wait_For_Simulation_To_End(self, directOrGUI):
         fitnessFileName = "fitness" + str(self.myID) + ".txt"
         while not os.path.exists(fitnessFileName):
-            #print(fitnessFileName)
+            # print(fitnessFileName)
             time.sleep(0.1)
         file = open(fitnessFileName, "r")
         self.fitness = float(file.read())
@@ -44,137 +49,132 @@ class OPTOMIZED_SOLUTION:
 
     def Create_Body(self):
         pyrosim.Start_URDF("body.urdf")
-        #TORSO
+        # TORSO
         pyrosim.Send_Cube(name="Torso", pos=[0, 0, 1], size=[1, 1, 1])
 
-        #UPPER LEGS
-        pyrosim.Send_Joint(name="Torso_FLU", parent="Torso", child="FLU", type="revolute",
+        # UPPER LEGS
+        pyrosim.Send_Joint(name="Torso_upper-front-left", parent="Torso", child="upper-front-left", type="revolute",
                            position=[0, .5, 1], jointAxis="1 0 0")
-        pyrosim.Send_Cube(name="FLU", pos=[0, .5, 0], size=[0.2, 1, 0.2])
+        pyrosim.Send_Cube(name="upper-front-left", pos=[0, .5, 0], size=[0.2, 1, 0.2])
 
-        pyrosim.Send_Joint(name="Torso_BLU", parent="Torso", child="BLU", type="revolute",
+        pyrosim.Send_Joint(name="Torso_upper-back-left", parent="Torso", child="upper-back-left", type="revolute",
                            position=[0, -0.5, 1], jointAxis="1 0 0")
-        pyrosim.Send_Cube(name="BLU", pos=[0, -0.5, 0], size=[0.2, 1, 0.2])
+        pyrosim.Send_Cube(name="upper-back-left", pos=[0, -0.5, 0], size=[0.2, 1, 0.2])
 
-        pyrosim.Send_Joint(name="Torso_FRU", parent="Torso", child="FRU", type="revolute",
+        pyrosim.Send_Joint(name="Torso_upper-front-right", parent="Torso", child="upper-front-right", type="revolute",
                            position=[-0.5, 0, 1], jointAxis="0 1 0")
-        pyrosim.Send_Cube(name="FRU", pos=[-0.5, 0, 0], size=[1, 0.2, 0.2])
+        pyrosim.Send_Cube(name="upper-front-right", pos=[-0.5, 0, 0], size=[1, 0.2, 0.2])
 
-        pyrosim.Send_Joint(name="Torso_BRU", parent="Torso", child="BRU", type="revolute",
+        pyrosim.Send_Joint(name="Torso_upper-back-right", parent="Torso", child="upper-back-right", type="revolute",
                            position=[0.5, 0, 1], jointAxis="0 1 0")
-        pyrosim.Send_Cube(name="BRU", pos=[0.5, 0, 0], size=[1, 0.2, 0.2])
+        pyrosim.Send_Cube(name="upper-back-right", pos=[0.5, 0, 0], size=[1, 0.2, 0.2])
 
-        #LOWER LEGS
-        pyrosim.Send_Joint(name="FLU_FLL", parent="FLU", child="FLL", type="revolute",
+        # LOWER LEGS
+        pyrosim.Send_Joint(name="upper-front-left_lower-front-left", parent="upper-front-left",
+                           child="lower-front-left", type="revolute",
                            position=[0, 1, 0], jointAxis="1 0 0")
-        pyrosim.Send_Cube(name="FLL", pos=[0, 0, -.5], size=[0.2, 0.2, 1])
+        pyrosim.Send_Cube(name="lower-front-left", pos=[0, 0, -.5], size=[0.2, 0.2, 1])
 
-        pyrosim.Send_Joint(name="BLU_BLL", parent="BLU", child="BLL", type="revolute",
+        pyrosim.Send_Joint(name="upper-back-left_lower-back-left", parent="upper-back-left", child="lower-back-left",
+                           type="revolute",
                            position=[0, -1, 0], jointAxis="1 0 0")
-        pyrosim.Send_Cube(name="BLL", pos=[0, 0, -.5], size=[0.2, 0.2, 1])
+        pyrosim.Send_Cube(name="lower-back-left", pos=[0, 0, -.5], size=[0.2, 0.2, 1])
 
-        pyrosim.Send_Joint(name="FRU_FRL", parent="FRU", child="FRL", type="revolute",
+        pyrosim.Send_Joint(name="upper-front-right_lower-front-right", parent="upper-front-right",
+                           child="lower-front-right", type="revolute",
                            position=[-1, 0, 0], jointAxis="0 1 0")
-        pyrosim.Send_Cube(name="FRL", pos=[0, 0, -.5], size=[0.2, 0.2, 1])
+        pyrosim.Send_Cube(name="lower-front-right", pos=[0, 0, -.5], size=[0.2, 0.2, 1])
 
-        pyrosim.Send_Joint(name="BRU_BRL", parent="BRU", child="BRL", type="revolute",
+        pyrosim.Send_Joint(name="upper-back-right_lower-back-right", parent="upper-back-right",
+                           child="lower-back-right", type="revolute",
                            position=[1, 0, 0], jointAxis="0 1 0")
-        pyrosim.Send_Cube(name="BRL", pos=[0, 0, -.5], size=[0.2, 0.2, 1])
+        pyrosim.Send_Cube(name="lower-back-right", pos=[0, 0, -.5], size=[0.2, 0.2, 1])
 
         pyrosim.End()
 
     def Create_Brain(self):
         pyrosim.Start_NeuralNetwork("brain" + str(self.myID) + ".nndf")
-        pyrosim.Send_Sensor_Neuron(name=0, linkName="FLL")
-        pyrosim.Send_Sensor_Neuron(name=1, linkName="BLL")
-        pyrosim.Send_Sensor_Neuron(name=2, linkName="FRL")
-        pyrosim.Send_Sensor_Neuron(name=3, linkName="BRL")
-        pyrosim.Send_Motor_Neuron(name=4, jointName="Torso_BLU")
-        pyrosim.Send_Motor_Neuron(name=5, jointName="Torso_FLU")
-        pyrosim.Send_Motor_Neuron(name=6, jointName="Torso_FRU")
-        pyrosim.Send_Motor_Neuron(name=7, jointName="Torso_BRU")
-        pyrosim.Send_Motor_Neuron(name=8, jointName="BLU_BLL")
-        pyrosim.Send_Motor_Neuron(name=9, jointName="FLU_FLL")
-        pyrosim.Send_Motor_Neuron(name=10, jointName="FRU_FRL")
-        pyrosim.Send_Motor_Neuron(name=11, jointName="BRU_BRL")
+        pyrosim.Send_Sensor_Neuron(name=0, linkName="lower-front-left")
+        pyrosim.Send_Sensor_Neuron(name=1, linkName="lower-back-left")
+        pyrosim.Send_Sensor_Neuron(name=2, linkName="lower-front-right")
+        pyrosim.Send_Sensor_Neuron(name=3, linkName="lower-back-right")
+        pyrosim.Send_Motor_Neuron(name=4, jointName="Torso_upper-back-left")
+        pyrosim.Send_Motor_Neuron(name=5, jointName="Torso_upper-front-left")
+        pyrosim.Send_Motor_Neuron(name=6, jointName="Torso_upper-front-right")
+        pyrosim.Send_Motor_Neuron(name=7, jointName="Torso_upper-back-right")
+        pyrosim.Send_Motor_Neuron(name=8, jointName="upper-back-left_lower-back-left")
+        pyrosim.Send_Motor_Neuron(name=9, jointName="upper-front-left_lower-front-left")
+        pyrosim.Send_Motor_Neuron(name=10, jointName="upper-front-right_lower-front-right")
+        pyrosim.Send_Motor_Neuron(name=11, jointName="upper-back-right_lower-back-right")
 
         for currentRow in range(c.numSensorNeurons):
-                for currentColumn in range(c.numMotorNeurons):
-                    pyrosim.Send_Synapse(sourceNeuronName=currentRow, targetNeuronName=currentColumn + c.numSensorNeurons,
-                                         weight=self.weights[currentRow][currentColumn])
+            for currentColumn in range(c.numMotorNeurons):
+                pyrosim.Send_Synapse(sourceNeuronName=currentRow, targetNeuronName=currentColumn + c.numSensorNeurons,
+                                     weight=self.weights[currentRow][currentColumn])
 
         pyrosim.End()
 
         while not os.path.exists("brain" + str(self.myID) + ".nndf"):
-                time.sleep(0.01)
+            time.sleep(0.01)
 
     def Mutate(self):
         row = random.randint(0, 2)
         col = random.randint(0, 1)
         self.weights[row][col] = random.random() * 2 - 1
-        self.Mutate_Vars(random.randint(0, 26))
+        self.Mutate_Vars()
 
-    def Mutate_Vars(self, var):
+    def Mutate_Vars(self):
+        var = random.choice(list(c.variables.keys()))  # amp, freq, offset, jointrange
         print("MUTATING VARIABLE", var)
-        print("VALUE:", c.variables[var], end=" ")
-        if var == 0: # fitness
-            print()
-        #vars 1-4 are upper amps
-        elif var == 1 or var == 2:#front
-            r = numpy.pi*random.random()
-            c.FLUAmp = r
-            c.FRUAmp = r
-            print(c.frontAmp)
 
-        elif var == 3 or var == 4:#back
-            r = numpy.pi*random.random()
-            c.BLUAmp = r
-            c.BRUAmp = r
-            print(c.frontAmp)
+        if var == "jointRange":
+            c.variables[var] = random.random() * 5
+            print(c.variables.get(var))
+        elif var == "fitness":
+            pass
+        else:
+            upperLower = random.choice(list(c.variables[var].keys()))  # upper, lower
+            frontBack = random.choice(list(c.variables[var][upperLower].keys()))  # front, back
+            leftRight = random.randint(0, 1)
+            if var == 'amplitudes':  # amplitudes
+                randNum = numpy.pi * random.random()
+            elif var == 'frequencies':
+                randNum = random.random() * 10
+            elif var == 'offsets':
+                randNum = random.random() * 10
+            else:
+                randNum = 0
 
-        #5-8 are lower amps
-        elif var == 5 or var == 6:#front
-            r = numpy.pi*random.random()
-            c.FLLAmp = r
-            c.FRLAmp = r
-            print(c.frontAmp)
-
-        elif var == 5 or var == 6:#back
-            r = numpy.pi*random.random()
-            c.BLUAmp = r
-            c.BRUAmp = r
-            print(c.frontAmp)
-
-        elif var == 3:
-            r = random.random()*10
-            c.frontFreq = r
-            print(c.frontFreq)
-
-        elif var == 4:
-            r = random.random()*10
-            c.backFreq = r
-            print(c.backFreq)
-
-        elif var == 5:
-            c.frontOffset = random.random()*10
-            print(c.frontOffset)
-
-        elif var == 6:
-            c.backOffset = random.random()*10
-            print(c.backOffset)
-
-        elif var == 7:
-            c.motorJointRange = random.random()*5
-            print(c.motorJointRange)
+            c.variables[var][upperLower][frontBack][leftRight] = randNum
 
     def Set_ID(self, newID):
         self.myID = newID
 
-    def Set_Vars(self, frontAmp, backAmp, frontFreq, backFreq, frontOffset, backOffset, motorJointRange):
-        c.frontAmp = frontAmp
-        c.backAmp = backAmp
-        c.frontFreq = frontFreq
-        c.backFreq = backFreq
-        c.frontOffset = frontOffset
-        c.backOffset = backOffset
-        c.motorJointRange = motorJointRange
+    def Set_Vars(self, FLUAmp, FRUAmp, BLUAmp, BRUAmp, FLLAmp, FRLAmp, BLLAmp, BRLAmp, FLUFreq, FRUFreq, BLUFreq,
+                 BRUFreq, FLLFreq, FRLFreq, BLLFreq, BRLFreq, FLUOffset, FRUOffset, BLUOffset, BRUOffset, FLLOffset,
+                 FRLOffset, BLLOffset, BRLOffset, motorJointRange):
+        foo = [FLUAmp, FRUAmp, BLUAmp, BRUAmp, FLLAmp, FRLAmp, BLLAmp, BRLAmp, FLUFreq, FRUFreq, BLUFreq,
+               BRUFreq, FLLFreq, FRLFreq, BLLFreq, BRLFreq, FLUOffset, FRUOffset, BLUOffset, BRUOffset, FLLOffset,
+               FRLOffset, BLLOffset, BRLOffset, motorJointRange]
+        varCounter = 0
+        for i in c.variables.keys():  # vars
+            if i != 'fitness' and i != 'jointRange':
+                for j in c.variables[i].keys():  # upper/lower
+                    for k in c.variables[i][j].keys():  # front back
+                        c.variables[i][j][k][0] = foo[varCounter]
+                        varCounter += 1
+                        c.variables[i][j][k][1] = foo[varCounter]
+                        varCounter += 1
+
+        c.variables['jointRange'] = motorJointRange
+
+    def Output_Vars(self):
+        output = ""
+        for i in c.variables.keys():  # vars
+            if i != 'fitness' and i != 'jointRange':
+                for j in c.variables[i].keys():  # upper/lower
+                    for k in c.variables[i][j].keys():  # front back
+                        output += str(c.variables[i][j][k][0]) + " " + str(c.variables[i][j][k][1]) + " "
+
+        output += str(c.variables.get('jointRange'))
+        return output

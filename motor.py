@@ -11,16 +11,16 @@ class MOTOR:
         self.Prepare_To_Act()
 
     def Prepare_To_Act(self):
-        if self.jointName == "Torso_FLU":
-            self.amplitude = c.FLUAmp
-            self.frequency = c.frontLeftFreq
-            self.offset = c.frontLeftOffset
-        elif self.jointName == "Torso_LeftLeg":
-            self.amplitude = c.frontLeftAmp
-            self.frequency = c.frontLeftFreq
-            self.offset = c.frontLeftOffset
-        if self.jointName == "Torso_BackLeg":
-            self.frequency /= 2
+        name = self.jointName.split('_')
+        pieces = name[1].split('-')
+        if pieces[2] == 'left':
+            self.amplitude = float(c.variables['amplitudes'][pieces[0]][pieces[1]][0])
+            self.frequency = float(c.variables['frequencies'][pieces[0]][pieces[1]][0])
+            self.offset = float(c.variables['offsets'][pieces[0]][pieces[1]][0])
+        elif pieces[2] == 'right':
+            self.amplitude = float(c.variables['amplitudes'][pieces[0]][pieces[1]][1])
+            self.frequency = float(c.variables['frequencies'][pieces[0]][pieces[1]][1])
+            self.offset = float(c.variables['offsets'][pieces[0]][pieces[1]][1])
         for i in range(c.simLength):
             self.motorValues[i] = self.amplitude * numpy.sin(self.frequency * i / 100 + self.offset)
 
