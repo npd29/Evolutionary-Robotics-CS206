@@ -4,7 +4,7 @@ import numpy
 
 simLength = 10000
 numberOfGenerations = 10
-populationSize = 15
+populationSize = 1
 
 # -------------FITNESS-------------
 fitness = 0

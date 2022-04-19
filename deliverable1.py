@@ -32,9 +32,9 @@ class PHC_BEST:
         # self.parent.Evaluate("GUI")
         for currentGeneration in range(c.numberOfGenerations):
             self.Evolve_For_One_Generation()
-        if self.bestFitnessFromFile < self.currentBest:
-            for currentGeneration in range(c.numberOfGenerations):
-                self.Evolve_For_One_Generation()
+        # if self.bestFitnessFromFile < self.currentBest:
+        #     for currentGeneration in range(c.numberOfGenerations):
+        #         self.Evolve_For_One_Generation()
 
     def Evolve_For_One_Generation(self):
         self.Spawn()
@@ -93,37 +93,37 @@ class PHC_BEST:
             self.bestFitnessFromFile = 0
             for robot in robotReader:
                 if population < c.populationSize:
-                    if population == 1:
+                    if population == 0:
                         self.bestFitnessFromFile = float(robot['fitness'])
                     population += 1
                     self.parents[i] = OPTOMIZED_SOLUTION(self.nextAvailableID, i + 1)
                     # print("OLD:", c.motorJointRange, )
                     # TODO: ENSURE THIS SETS VARIABLES
-                    self.parents[i].Set_Vars(float(robot['FLUAmp']), float(robot['FRUAmp']), float(robot['BLUAmp']),
-                                             float(robot['BRUAmp']),
-                                             float(robot['FLLAmp']), float(robot['FRLAmp']), float(robot['BLLAmp']),
-                                             float(robot['BRLAmp']),
-                                             float(robot['FLUFreq']), float(robot['FRUFreq']), float(robot['BLUFreq']),
-                                             float(robot['BRUFreq']),
-                                             float(robot['FLLFreq']), float(robot['FRLFreq']), float(robot['BLLFreq']),
-                                             float(robot['BRLFreq']),
-                                             float(robot['FLUOffset']), float(robot['FRUOffset']),
-                                             float(robot['BLUOffset']), float(robot['BRUOffset']),
-                                             float(robot['FLLOffset']), float(robot['FRLOffset']),
-                                             float(robot['BLLOffset']), float(robot['BRLOffset']),
-                                             float(robot['motorJointRange']))
+                    # self.parents[i].Set_Vars(float(robot['FLUAmp']), float(robot['FRUAmp']), float(robot['BLUAmp']),
+                    #                          float(robot['BRUAmp']),
+                    #                          float(robot['FLLAmp']), float(robot['FRLAmp']), float(robot['BLLAmp']),
+                    #                          float(robot['BRLAmp']),
+                    #                          float(robot['FLUFreq']), float(robot['FRUFreq']), float(robot['BLUFreq']),
+                    #                          float(robot['BRUFreq']),
+                    #                          float(robot['FLLFreq']), float(robot['FRLFreq']), float(robot['BLLFreq']),
+                    #                          float(robot['BRLFreq']),
+                    #                          float(robot['FLUOffset']), float(robot['FRUOffset']),
+                    #                          float(robot['BLUOffset']), float(robot['BRUOffset']),
+                    #                          float(robot['FLLOffset']), float(robot['FRLOffset']),
+                    #                          float(robot['BLLOffset']), float(robot['BRLOffset']),
+                    #                          float(robot['motorJointRange']))
                     self.nextAvailableID += 1
                     i += 1
             while population < c.populationSize:
                 self.parents[i] = OPTOMIZED_SOLUTION(self.nextAvailableID, 11)
-                self.parents[i].Set_Vars(random.random() * numpy.pi, random.random() * numpy.pi,
-                                         random.random() * numpy.pi, random.random() * numpy.pi,
-                                         random.random() * numpy.pi, random.random() * numpy.pi,
-                                         random.random() * numpy.pi, random.random() * numpy.pi,
-                                         random.randint(0, 10), random.randint(0, 10), random.randint(0, 10),
-                                         random.randint(0, 10), random.randint(0, 10), random.randint(0, 10),
-                                         random.randint(0, 10), random.randint(0, 10), 0, 0, 0, 0, 0, 0, 0, 0,
-                                         random.randint(0, 10))
+            #     self.parents[i].Set_Vars(random.random() * numpy.pi, random.random() * numpy.pi,
+            #                              random.random() * numpy.pi, random.random() * numpy.pi,
+            #                              random.random() * numpy.pi, random.random() * numpy.pi,
+            #                              random.random() * numpy.pi, random.random() * numpy.pi,
+            #                              random.randint(0, 10), random.randint(0, 10), random.randint(0, 10),
+            #                              random.randint(0, 10), random.randint(0, 10), random.randint(0, 10),
+            #                              random.randint(0, 10), random.randint(0, 10), 0, 0, 0, 0, 0, 0, 0, 0,
+            #                              random.randint(0, 10))
                 population += 1
                 self.nextAvailableID += 1
                 i += 1

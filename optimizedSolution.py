@@ -10,20 +10,22 @@ import constants as c
 class OPTOMIZED_SOLUTION:
 
     def __init__(self, nextAvailableID, recreateID):
-
         self.myID = nextAvailableID
         if recreateID > 10:
+            # print("new")
             self.weights = numpy.random.rand(c.numSensorNeurons, c.numMotorNeurons)
             self.weights = self.weights * 2 - 1
         else:
             try:
                 self.weights = numpy.load("data/NNWeights/weights" + str(recreateID) + ".npy")
-                print("FILE FOUND")
+                print("data/NNWeights/weights" + str(recreateID) + ".npy")
             except FileNotFoundError:
                 self.weights = numpy.load("data/NNWeights/weights" + str(recreateID + 1) + ".npy")
                 print("FILE NOT FOUND")
         c.weights = self.weights
+        # print(self.weights)
         # print(c.weights)
+        # print(self.Output_Vars())
 
     def Start_Simulation(self, directOrGUI):
         self.Create_World()
@@ -121,7 +123,7 @@ class OPTOMIZED_SOLUTION:
         row = random.randint(0, 2)
         col = random.randint(0, 1)
         self.weights[row][col] = random.random() * 2 - 1
-        self.Mutate_Vars()
+        # self.Mutate_Vars()
 
     def Mutate_Vars(self):
         var = random.choice(list(c.variables.keys()))  # amp, freq, offset, jointrange
