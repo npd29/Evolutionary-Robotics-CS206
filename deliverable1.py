@@ -6,6 +6,7 @@ import constants as c
 import copy
 import csv
 import numpy
+import subprocess as sp
 import time
 import random
 
@@ -77,7 +78,7 @@ class PHC_BEST:
         print("FINAL FITNESS:", c.fitness)
         input("Press ENTER to show the evolved robot and save")
         self.parents[bestFit].Start_Simulation("GUI")
-        self.saveData(bestFit)
+        # self.saveData(bestFit)
 
     def Evaluate(self, solutions):
         for i in range(c.populationSize):
@@ -116,14 +117,14 @@ class PHC_BEST:
                     i += 1
             while population < c.populationSize:
                 self.parents[i] = OPTOMIZED_SOLUTION(self.nextAvailableID, 11)
-            #     self.parents[i].Set_Vars(random.random() * numpy.pi, random.random() * numpy.pi,
-            #                              random.random() * numpy.pi, random.random() * numpy.pi,
-            #                              random.random() * numpy.pi, random.random() * numpy.pi,
-            #                              random.random() * numpy.pi, random.random() * numpy.pi,
-            #                              random.randint(0, 10), random.randint(0, 10), random.randint(0, 10),
-            #                              random.randint(0, 10), random.randint(0, 10), random.randint(0, 10),
-            #                              random.randint(0, 10), random.randint(0, 10), 0, 0, 0, 0, 0, 0, 0, 0,
-            #                              random.randint(0, 10))
+                #     self.parents[i].Set_Vars(random.random() * numpy.pi, random.random() * numpy.pi,
+                #                              random.random() * numpy.pi, random.random() * numpy.pi,
+                #                              random.random() * numpy.pi, random.random() * numpy.pi,
+                #                              random.random() * numpy.pi, random.random() * numpy.pi,
+                #                              random.randint(0, 10), random.randint(0, 10), random.randint(0, 10),
+                #                              random.randint(0, 10), random.randint(0, 10), random.randint(0, 10),
+                #                              random.randint(0, 10), random.randint(0, 10), 0, 0, 0, 0, 0, 0, 0, 0,
+                #                              random.randint(0, 10))
                 population += 1
                 self.nextAvailableID += 1
                 i += 1
@@ -134,7 +135,8 @@ class PHC_BEST:
             reader = list(csv.reader(readFile))
             i = 1
             pos = 0
-            row = self.Get_Vars()
+            row = [self.parents[best].fitness, c.numSensorNeurons, c.numHiddenNeurons, c.numMotorNeurons,
+                   c.numberOfGenerations, c.populationSize]
             for topTenRobot in reader:
                 if i != 1:  # skip the first line (headers)
                     if self.parents[best].fitness > float(topTenRobot[0]):  # check fitnesses
@@ -152,13 +154,41 @@ class PHC_BEST:
             # j += 1
 
         if i <= 10:  # if the new robot is in the top 10
-            numpy.save("data/NNWeights/hold.npy", c.weights)
+            numpy.save("data/NNWeights/SensorWeights/holdSensor.npy", c.sensorWeights)
+            numpy.save("data/NNWeights/MotorWeights/holdMotor.npy", c.motorWeights)
+
             for num in range(9, i - 1, -1):
-                os.system(
-                    "mv data/NNWeights/weights" + str(num) + ".npy data/NNWeights/weights" + str(num + 1) + ".npy")
+                sensorCommand = "mv data/NNWeights/SensorWeights/sensorWeight-" + str(num) + ".npy data/NNWeights/SensorWeights/sensorWeight-" + str(num + 1) + ".npy"
+                motorCommand = "mv data/NNWeights/MotorWeights/motorWeight-" + str(num) + ".npy data/NNWeights/MotorWeights/motorWeight-" + str(num + 1) + ".npy"
+                try:
+                    sp.run([sensorCommand], check=True)
+                    sp.run([motorCommand], check=True)
+                except sp.CalledProcessError:
+                    print("File " + num + " not found - Creating File")
+                    motorFileName = "data/NNWeights/MotorWeights/motorWeight-" + str(num + 1) + ".npy"
+                    motorFile = open(motorFileName, 'w')
+                    sensorFileName = "data/NNWeights/SensorWeights/sensorWeight-" + str(num + 1) + ".npy"
+                    sensorFile = open(sensorFileName, 'w')
+                    motorFile.close()
+                    sensorFile.close()
+
                 # input("did it work?")
             # input("ready to insert holds into "+str(i))
-            os.system("mv data/NNWeights/hold.npy data/NNWeights/weights" + str(i) + ".npy")
+            sensorCommand = "mv data/NNWeights/SensorWeights/holdSensor.npy data/NNWeights/SensorWeights/sensorWeight-" + str(i) + ".npy"
+            motorCommand = "mv data/NNWeights/MotorWeights/holdMotor.npy data/NNWeights/MotorWeights/motorWeight-" + str(i) + ".npy"
+            try:
+                sp.run([sensorCommand], check=True)
+                sp.run([motorCommand], check=True)
+            except sp.CalledProcessError:
+                print("Hold Files not found - Creating Weight Files")
+                motorFileName = "data/NNWeights/MotorWeights/motorWeight-" + str(i) + ".npy"
+                motorFile = open(motorFileName, 'w')
+                sensorFileName = "data/NNWeights/SensorWeights/sensorWeight-" + str(i) + ".npy"
+                sensorFile = open(sensorFileName, 'w')
+                motorFile.close()
+                sensorFile.close()
+
+
 
     def Get_Vars(self):
         row = [c.fitness]

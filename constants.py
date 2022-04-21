@@ -3,8 +3,8 @@ import numpy
 # -------------GENERAL-------------
 
 simLength = 10000
-numberOfGenerations = 10
-populationSize = 1
+numberOfGenerations = 15
+populationSize = 20
 
 # -------------FITNESS-------------
 fitness = 0
@@ -74,6 +74,8 @@ motorJointRange = .9
 
 numSensorNeurons = 4
 numMotorNeurons = 8
+numHiddenNeurons = 4
+
 variables = {'fitness': fitness,
              'amplitudes': amplitudes,
              'frequencies': frequencies,
@@ -85,6 +87,7 @@ variables = {'fitness': fitness,
 #              FRLOffset, BLLOffset, BRLOffset, motorJointRange
 #              ]
 
-weights = numpy.eye(numSensorNeurons, numMotorNeurons)
+motorWeights = numpy.eye(numHiddenNeurons, numMotorNeurons)
+sensorWeights = numpy.eye(numSensorNeurons, numHiddenNeurons)
 
 saveID = 0

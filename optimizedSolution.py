@@ -12,20 +12,24 @@ class OPTOMIZED_SOLUTION:
     def __init__(self, nextAvailableID, recreateID):
         self.myID = nextAvailableID
         if recreateID > 10:
-            # print("new")
-            self.weights = numpy.random.rand(c.numSensorNeurons, c.numMotorNeurons)
-            self.weights = self.weights * 2 - 1
+            self.sensorWeights = numpy.random.rand(c.numSensorNeurons, c.numHiddenNeurons)
+            self.motorWeights = numpy.random.rand(c.numHiddenNeurons, c.numMotorNeurons)
+            self.sensorWeights = self.sensorWeights * 2 - 1
+            self.motorWeights = self.motorWeights * 2 - 1
         else:
             try:
-                self.weights = numpy.load("data/NNWeights/weights" + str(recreateID) + ".npy")
-                print("data/NNWeights/weights" + str(recreateID) + ".npy")
+                self.sensorWeights = numpy.load("data/NNWeights/SensorWeights/sensorWeight-" + str(recreateID) + ".npy")
+                self.motorWeights = numpy.load("data/NNWeights/MotorWeights/motorWeight-" + str(recreateID) + ".npy")
+                print(recreateID)
             except FileNotFoundError:
-                self.weights = numpy.load("data/NNWeights/weights" + str(recreateID + 1) + ".npy")
                 print("FILE NOT FOUND")
-        c.weights = self.weights
-        # print(self.weights)
-        # print(c.weights)
-        # print(self.Output_Vars())
+                self.sensorWeights = numpy.random.rand(c.numSensorNeurons, c.numHiddenNeurons)
+                self.motorWeights = numpy.random.rand(c.numHiddenNeurons, c.numMotorNeurons)
+                self.sensorWeights = self.sensorWeights * 2 - 1
+                self.motorWeights = self.motorWeights * 2 - 1
+
+        c.sensorWeights = self.sensorWeights
+        c.motorWeights = self.motorWeights
 
     def Start_Simulation(self, directOrGUI):
         self.Create_World()
@@ -52,7 +56,7 @@ class OPTOMIZED_SOLUTION:
     def Create_Body(self):
         pyrosim.Start_URDF("body.urdf")
         # TORSO
-        pyrosim.Send_Cube(name="Torso", pos=[0, 0, 1], size=[1, 1, 1])
+        pyrosim.Send_Cube(name="Torso", pos=[0, 0, 1], size=[1, 1, 1], mass=5.0)
 
         # UPPER LEGS
         pyrosim.Send_Joint(name="Torso_upper-front-left", parent="Torso", child="upper-front-left", type="revolute",
@@ -100,19 +104,27 @@ class OPTOMIZED_SOLUTION:
         pyrosim.Send_Sensor_Neuron(name=1, linkName="lower-back-left")
         pyrosim.Send_Sensor_Neuron(name=2, linkName="lower-front-right")
         pyrosim.Send_Sensor_Neuron(name=3, linkName="lower-back-right")
-        pyrosim.Send_Motor_Neuron(name=4, jointName="Torso_upper-back-left")
-        pyrosim.Send_Motor_Neuron(name=5, jointName="Torso_upper-front-left")
-        pyrosim.Send_Motor_Neuron(name=6, jointName="Torso_upper-front-right")
-        pyrosim.Send_Motor_Neuron(name=7, jointName="Torso_upper-back-right")
-        pyrosim.Send_Motor_Neuron(name=8, jointName="upper-back-left_lower-back-left")
-        pyrosim.Send_Motor_Neuron(name=9, jointName="upper-front-left_lower-front-left")
-        pyrosim.Send_Motor_Neuron(name=10, jointName="upper-front-right_lower-front-right")
-        pyrosim.Send_Motor_Neuron(name=11, jointName="upper-back-right_lower-back-right")
+        pyrosim.Send_Hidden_Neuron(name=4)
+        pyrosim.Send_Hidden_Neuron(name=5)
+        pyrosim.Send_Hidden_Neuron(name=6)
+        pyrosim.Send_Hidden_Neuron(name=7)
+        pyrosim.Send_Motor_Neuron(name=8, jointName="Torso_upper-back-left")
+        pyrosim.Send_Motor_Neuron(name=9, jointName="Torso_upper-front-left")
+        pyrosim.Send_Motor_Neuron(name=10, jointName="Torso_upper-front-right")
+        pyrosim.Send_Motor_Neuron(name=11, jointName="Torso_upper-back-right")
+        pyrosim.Send_Motor_Neuron(name=12, jointName="upper-back-left_lower-back-left")
+        pyrosim.Send_Motor_Neuron(name=13, jointName="upper-front-left_lower-front-left")
+        pyrosim.Send_Motor_Neuron(name=14, jointName="upper-front-right_lower-front-right")
+        pyrosim.Send_Motor_Neuron(name=15, jointName="upper-back-right_lower-back-right")
 
         for currentRow in range(c.numSensorNeurons):
-            for currentColumn in range(c.numMotorNeurons):
+            for currentColumn in range(c.numHiddenNeurons):
                 pyrosim.Send_Synapse(sourceNeuronName=currentRow, targetNeuronName=currentColumn + c.numSensorNeurons,
-                                     weight=self.weights[currentRow][currentColumn])
+                                     weight=self.sensorWeights[currentRow][currentColumn])
+        for currentRow in range(c.numHiddenNeurons):
+            for currentColumn in range(c.numMotorNeurons):
+                pyrosim.Send_Synapse(sourceNeuronName=currentRow+c.numSensorNeurons, targetNeuronName=currentColumn + c.numHiddenNeurons + c.numSensorNeurons,
+                                     weight=self.motorWeights[currentRow][currentColumn])
 
         pyrosim.End()
 
@@ -120,9 +132,13 @@ class OPTOMIZED_SOLUTION:
             time.sleep(0.01)
 
     def Mutate(self):
-        row = random.randint(0, 2)
-        col = random.randint(0, 1)
-        self.weights[row][col] = random.random() * 2 - 1
+        row = random.randint(0, c.numSensorNeurons-1)
+        col = random.randint(0, c.numHiddenNeurons-1)
+        self.sensorWeights[row][col] = random.random() * 2 - 1
+        row = random.randint(0, c.numHiddenNeurons-1)
+        col = random.randint(0, c.numMotorNeurons-1)
+        self.motorWeights[row][col] = random.random() * 2 - 1
+
         # self.Mutate_Vars()
 
     def Mutate_Vars(self):
