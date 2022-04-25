@@ -3,8 +3,9 @@ import numpy
 # -------------GENERAL-------------
 
 simLength = 10000
-numberOfGenerations = 15
-populationSize = 20
+numberOfGenerations = 1
+populationSize = 1
+#population size less than 10 will only re-simulate the top 10 robots
 
 # -------------FITNESS-------------
 fitness = 0

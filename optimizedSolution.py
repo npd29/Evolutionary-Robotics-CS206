@@ -21,7 +21,8 @@ class OPTOMIZED_SOLUTION:
                 self.sensorWeights = numpy.load("data/NNWeights/SensorWeights/sensorWeight-" + str(recreateID) + ".npy")
                 self.motorWeights = numpy.load("data/NNWeights/MotorWeights/motorWeight-" + str(recreateID) + ".npy")
                 print(recreateID)
-            except FileNotFoundError:
+                print(self.sensorWeights)
+            except (FileNotFoundError, ValueError) as e:
                 print("FILE NOT FOUND")
                 self.sensorWeights = numpy.random.rand(c.numSensorNeurons, c.numHiddenNeurons)
                 self.motorWeights = numpy.random.rand(c.numHiddenNeurons, c.numMotorNeurons)

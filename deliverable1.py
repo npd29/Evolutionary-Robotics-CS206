@@ -78,7 +78,7 @@ class PHC_BEST:
         print("FINAL FITNESS:", c.fitness)
         input("Press ENTER to show the evolved robot and save")
         self.parents[bestFit].Start_Simulation("GUI")
-        # self.saveData(bestFit)
+        self.saveData(bestFit)
 
     def Evaluate(self, solutions):
         for i in range(c.populationSize):
@@ -137,14 +137,18 @@ class PHC_BEST:
             pos = 0
             row = [self.parents[best].fitness, c.numSensorNeurons, c.numHiddenNeurons, c.numMotorNeurons,
                    c.numberOfGenerations, c.populationSize]
+            doNotInsert = False
             for topTenRobot in reader:
                 if i != 1:  # skip the first line (headers)
+                    if self.parents[best].fitness == float(topTenRobot[0]):  # check fitnesses
+                        doNotInsert = True
                     if self.parents[best].fitness > float(topTenRobot[0]):  # check fitnesses
                         break  # if you find a fitness that is less than the best fitness
                 i += 1
 
             i -= 1
-            reader.insert(i, row)
+            if not doNotInsert:
+                reader.insert(i, row)
 
         with open('data/fitnessData4Legs.csv', "w") as outfile:
             writer = csv.writer(outfile)
@@ -153,18 +157,20 @@ class PHC_BEST:
                 writer.writerow(line)
             # j += 1
 
-        if i <= 10:  # if the new robot is in the top 10
+        if i <= 10 and not doNotInsert:  # if the new robot is in the top 10
+            c.sensorWeights = self.parents[best].sensorWeights
+            c.motorWeights = self.parents[best].motorWeights
             numpy.save("data/NNWeights/SensorWeights/holdSensor.npy", c.sensorWeights)
             numpy.save("data/NNWeights/MotorWeights/holdMotor.npy", c.motorWeights)
-
             for num in range(9, i - 1, -1):
                 sensorCommand = "mv data/NNWeights/SensorWeights/sensorWeight-" + str(num) + ".npy data/NNWeights/SensorWeights/sensorWeight-" + str(num + 1) + ".npy"
                 motorCommand = "mv data/NNWeights/MotorWeights/motorWeight-" + str(num) + ".npy data/NNWeights/MotorWeights/motorWeight-" + str(num + 1) + ".npy"
                 try:
-                    sp.run([sensorCommand], check=True)
-                    sp.run([motorCommand], check=True)
-                except sp.CalledProcessError:
-                    print("File " + num + " not found - Creating File")
+                    print("Moving File", num, "to", num+1)
+                    sp.run([sensorCommand], check=True, shell=True)
+                    sp.run([motorCommand], check=True, shell=True)
+                except (sp.CalledProcessError, FileNotFoundError) as e:
+                    print("File " + str(num) + " not found - Creating File")
                     motorFileName = "data/NNWeights/MotorWeights/motorWeight-" + str(num + 1) + ".npy"
                     motorFile = open(motorFileName, 'w')
                     sensorFileName = "data/NNWeights/SensorWeights/sensorWeight-" + str(num + 1) + ".npy"
@@ -177,10 +183,10 @@ class PHC_BEST:
             sensorCommand = "mv data/NNWeights/SensorWeights/holdSensor.npy data/NNWeights/SensorWeights/sensorWeight-" + str(i) + ".npy"
             motorCommand = "mv data/NNWeights/MotorWeights/holdMotor.npy data/NNWeights/MotorWeights/motorWeight-" + str(i) + ".npy"
             try:
-                sp.run([sensorCommand], check=True)
-                sp.run([motorCommand], check=True)
-            except sp.CalledProcessError:
-                print("Hold Files not found - Creating Weight Files")
+                sp.run([sensorCommand], check=True, shell=True)
+                sp.run([motorCommand], check=True, shell=True)
+            except (sp.CalledProcessError, FileNotFoundError) as e:
+                print(e, i)
                 motorFileName = "data/NNWeights/MotorWeights/motorWeight-" + str(i) + ".npy"
                 motorFile = open(motorFileName, 'w')
                 sensorFileName = "data/NNWeights/SensorWeights/sensorWeight-" + str(i) + ".npy"
