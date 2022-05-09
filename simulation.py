@@ -24,20 +24,24 @@ class SIMULATION:
     def Run(self):
         for i in range(c.simLength):
             if self.directOrGUI == 'GUI':
-                time.sleep(.001)
+                time.sleep(.01)
             p.stepSimulation()
-            self.robot.Sense(i)
-            self.robot.Think()
+            distances = self.robot.Sense(i, self.world)
+            self.robot.Think(distances)
+            # print(self.robot.Get_Distance_To_Goal())
             self.robot.Act(i)
             # backLegSensorValues[i] = pyrosim.Get_Touch_Sensor_Value_For_Link("BackLeg")
             # frontLegSensorValues[i] = pyrosim.Get_Touch_Sensor_Value_For_Link("FrontLeg")
             # frontAngles[i] = c.frontAmp * numpy.sin(c.frontFreq * i / 100 + c.frontOffset)
             # backAngles[i] = c.backAmp * numpy.sin(c.backFreq * i / 100 + c.backOffset)
-            if self.directOrGUI == "GUI":
-                time.sleep(.00001)
+            # if self.directOrGUI == "GUI":
+            #     time.sleep(.00001)
 
     def Get_Fitness(self):
         self.robot.Get_Fitness(self.id)
+
+    def getXY(self):
+        self.robot.GetXY()
 
     def __del__(self):
         p.disconnect()

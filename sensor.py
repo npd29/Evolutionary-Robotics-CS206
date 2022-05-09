@@ -12,3 +12,6 @@ class SENSOR:
 
     def Save_Values(self):
         numpy.save("data/sensorValues.npy", self.values)
+
+    def Set_Value(self, t, value):
+        self.values[t] = value

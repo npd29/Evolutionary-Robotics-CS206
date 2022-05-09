@@ -6,6 +6,8 @@ from sensor import SENSOR
 import pybullet as p
 import pyrosim.pyrosim as pyrosim
 import constants as c
+import math
+import world
 import numpy
 from pyrosim.neuralNetwork import NEURAL_NETWORK
 
@@ -24,15 +26,28 @@ class ROBOT:
         os.system("rm brain"+str(solutionID)+".nndf")
 
     def Prepare_To_Sense(self):
-        self.sensors ={}
         for linkName in pyrosim.linkNamesToIndices:
-            self.sensors[linkName] = SENSOR(linkName)
-            # print("LINKNAME:", linkName)
+            if linkName.split('-')[0] == 'lower': # added this because it wasnt working
+                self.sensors[linkName] = SENSOR(linkName)
+        self.sensors["nearest-obstacle"] = SENSOR("nearest-obstacle")
+        self.sensors["goal"] = SENSOR("goal")
 
-    def Sense(self, t):
+    def Sense(self, t, world):
+        sensorNum = 0
         for i in self.sensors:
-            self.sensors[i].Get_Value(t)
-            # print(self.sensors[i].Get_Value(t))
+            if sensorNum < c.numSensorNeurons-2:
+                self.sensors[i].Get_Value(t)
+            sensorNum += 1
+        #  Find distnace to nearest object and set sensor neuron
+        nearestPos = .5**world.getNearestPosition()
+        # print(world.getNearestPosition())
+        self.sensors["nearest-obstacle"].Set_Value(t, nearestPos)
+
+        #  find distance to goal and set sensor neuron
+        distance = self.Get_Distance_To_Goal()
+        self.sensors["goal"].Set_Value(t, distance)
+        # print(self.Get_Distance_To_Goal())
+        return [nearestPos, distance]
 
     def Prepare_To_Act(self):
         self.motors = {}
@@ -51,15 +66,31 @@ class ROBOT:
         # for i in self.motors:
         #     self.motors[i].Set_Value(self.robot, t)
 
-    def Think(self):
-        self.nn.Update()
+    def Think(self, distances):
+        self.nn.Update(distances)
         # self.nn.Print()
 
-    def Get_Fitness(self, solutionID):
+    def Get_Fitness(self, solutionID):  # Use distance formula
+        # stateOfLinkZero = p.getLinkState(self.robot, 0)
+        # positionOfLinkZero = stateOfLinkZero[0]
+        # xCoorOfLinkZero = positionOfLinkZero[0]
+        # yCoorOfLinkZero = positionOfLinkZero[1]
+        distance = self.Get_Distance_To_Goal()
+        file = open("tmp" + str(solutionID) + ".txt", "w")
+        file.write(str(distance))
+        file.close()
+        os.system("mv tmp" + str(solutionID) + ".txt fitness" + str(solutionID) + ".txt")
+
+    def GetXY(self):
         stateOfLinkZero = p.getLinkState(self.robot, 0)
         positionOfLinkZero = stateOfLinkZero[0]
         xCoorOfLinkZero = positionOfLinkZero[0]
-        file = open("tmp" + str(solutionID) + ".txt", "w")
-        file.write(str(xCoorOfLinkZero))
-        file.close()
-        os.system("mv tmp" + str(solutionID) + ".txt fitness" + str(solutionID) + ".txt")
+        yCoorOfLinkZero = positionOfLinkZero[1]
+        return [xCoorOfLinkZero, yCoorOfLinkZero]
+
+    def Get_Distance_To_Goal(self):
+        position = self.GetXY()
+        xDelta = position[0] - c.goal[0]
+        yDelta = position[1] - c.goal[1]
+        distance = math.sqrt(xDelta**2+yDelta**2)
+        return distance
