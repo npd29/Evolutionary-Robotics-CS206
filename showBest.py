@@ -8,6 +8,6 @@ numSaved = 1
 #     i += 1
 #     numSaved += 1
 c.show =True
-for i in range(numSaved):
-    phcBest = PHC_BEST()
-    phcBest.Show_Top()
+for i in range():
+    # phcBest = PHC_BEST()
+    # phcBest.Show_Top()

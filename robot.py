@@ -31,11 +31,13 @@ class ROBOT:
                 self.sensors[linkName] = SENSOR(linkName)
         self.sensors["nearest-obstacle"] = SENSOR("nearest-obstacle")
         self.sensors["goal"] = SENSOR("goal")
+        self.sensors["xPos"] = SENSOR("xPos")
+        self.sensors["yPos"] = SENSOR("yPos")
 
     def Sense(self, t, world):
         sensorNum = 0
         for i in self.sensors:
-            if sensorNum < c.numSensorNeurons-2:
+            if sensorNum < c.numSensorNeurons-4:
                 self.sensors[i].Get_Value(t)
             sensorNum += 1
         #  Find distnace to nearest object and set sensor neuron
@@ -46,8 +48,12 @@ class ROBOT:
         #  find distance to goal and set sensor neuron
         distance = self.Get_Distance_To_Goal()
         self.sensors["goal"].Set_Value(t, distance)
+        position = self.GetXY()
+        self.sensors["xPos"].Set_Value(t, position[0])
+        self.sensors["yPos"].Set_Value(t, position[1])
+
         # print(self.Get_Distance_To_Goal())
-        return [nearestPos, distance]
+        return [nearestPos, distance, position[0], position[1]]
 
     def Prepare_To_Act(self):
         self.motors = {}
@@ -82,11 +88,11 @@ class ROBOT:
         os.system("mv tmp" + str(solutionID) + ".txt fitness" + str(solutionID) + ".txt")
 
     def GetXY(self):
-        stateOfLinkZero = p.getLinkState(self.robot, 0)
-        positionOfLinkZero = stateOfLinkZero[0]
-        xCoorOfLinkZero = positionOfLinkZero[0]
-        yCoorOfLinkZero = positionOfLinkZero[1]
-        return [xCoorOfLinkZero, yCoorOfLinkZero]
+        basePositionAndOrientation = p.getBasePositionAndOrientation(self.robot)
+        basePosition = basePositionAndOrientation[0]
+        xPosition = basePosition[0]
+        yPosition = basePosition[1]
+        return [xPosition, yPosition]
 
     def Get_Distance_To_Goal(self):
         position = self.GetXY()

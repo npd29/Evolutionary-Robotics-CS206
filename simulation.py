@@ -5,6 +5,8 @@ import pybullet_data
 import time
 import pyrosim.pyrosim as pyrosim
 import constants as c
+import os
+import csv
 
 
 class SIMULATION:
@@ -22,9 +24,20 @@ class SIMULATION:
         self.robot = ROBOT(solutionID)
 
     def Run(self):
+        if self.directOrGUI == 'GUI':
+            counter = 1
+            while os.path.exists("data/XYData/" + str(counter) + ".csv"):
+                counter += 1
+            outfile = open("data/XYData/" + str(counter) + ".csv", 'w')
+            writer = csv.writer(outfile)
+
         for i in range(c.simLength):
             if self.directOrGUI == 'GUI':
                 time.sleep(.01)
+                if i%10 == 0:
+                    line = self.getXY()
+                    # line = position[0] + "," + position[1]
+                    writer.writerow(line)
             p.stepSimulation()
             distances = self.robot.Sense(i, self.world)
             self.robot.Think(distances)
@@ -37,11 +50,17 @@ class SIMULATION:
             # if self.directOrGUI == "GUI":
             #     time.sleep(.00001)
 
+        if self.directOrGUI == 'GUI':
+            outfile.close()
+
     def Get_Fitness(self):
         self.robot.Get_Fitness(self.id)
 
     def getXY(self):
-        self.robot.GetXY()
+        return self.robot.GetXY()
+
+    def SaveData(self):
+        pass
 
     def __del__(self):
         p.disconnect()
