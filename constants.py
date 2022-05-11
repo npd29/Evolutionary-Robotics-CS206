@@ -4,7 +4,7 @@ import math
 numRuns = 1
 numToSave = 10
 simLength = 1000  #600 is 50 secs
-numberOfGenerations = 100
+numberOfGenerations = 1000
 populationSize = 25
 show = False #keep this as false. will be changed automaticall by running showBest.py
 #population size less than 10 will only re-simulate the top 10 robots
@@ -19,8 +19,10 @@ fitness = 0
 
 # ---------JOINT MOTOR RANGE---------
 motorJointRange = 1
+CPG = 10
+t = 0
 
-numSensorNeurons = 8
+numSensorNeurons = 9
 numMotorNeurons = 8
 numHiddenNeuronsOne = 4
 numHiddenNeuronsTwo = 4

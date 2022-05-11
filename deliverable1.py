@@ -1,5 +1,6 @@
 import glob
 import os
+import time
 
 from optimizedSolution import OPTOMIZED_SOLUTION
 import constants as c
@@ -33,6 +34,7 @@ class PHC_BEST:
         self.Evaluate(self.parents)
         # self.parent.Evaluate("GUI")
         for currentGeneration in range(c.numberOfGenerations):
+            print("STARTING GENERATION", currentGeneration)
             self.Evolve_For_One_Generation()
         # if self.bestFitnessFromFile < self.currentBest:
         #     for currentGeneration in range(c.numberOfGenerations):
@@ -57,11 +59,24 @@ class PHC_BEST:
             self.children[i].Mutate()
 
     def Select(self):
+        worstFitness = 0
+        worstID = 0
         for i in self.parents:
             if self.parents[i].fitness > self.children[i].fitness:
                 self.parents[i] = self.children[i]
-            elif self.parents[i].fitness < self.bestFitnessFromFile:
+            if self.parents[i].fitness < self.bestFitnessFromFile:
                 self.currentBest = self.parents[i].fitness
+
+            if self.parents[i].fitness > worstFitness: # Get rid of worst one
+                worstFitness = self.parents[i].fitness
+                worstID = i
+        print("TRYING", worstID)
+        newBot = OPTOMIZED_SOLUTION(worstID, 0)
+        self.EvaluateNew(newBot)
+        if newBot.fitness < self.parents[worstID].fitness:
+            print("\nREPLACING", worstID)
+            print(self.parents[worstID].fitness, newBot.fitness)
+            self.parents[worstID] = newBot
 
     def Print(self):
         row = "\n" + str(self.generation)
@@ -99,6 +114,10 @@ class PHC_BEST:
             solutions[i].Start_Simulation("DIRECT")
         for i in range(c.populationSize):
             solutions[i].Wait_For_Simulation_To_End("DIRECT")
+
+    def EvaluateNew(self, solution):
+        solution.Start_Simulation("DIRECT")
+        solution.Wait_For_Simulation_To_End("DIRECT")
 
     def getFile(self):
         if not c.show: #  If evolving robots

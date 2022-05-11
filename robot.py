@@ -33,15 +33,17 @@ class ROBOT:
         self.sensors["goal"] = SENSOR("goal")
         self.sensors["xPos"] = SENSOR("xPos")
         self.sensors["yPos"] = SENSOR("yPos")
+        self.sensors["CPG"] = SENSOR("CPG")
+
 
     def Sense(self, t, world):
         sensorNum = 0
         for i in self.sensors:
-            if sensorNum < c.numSensorNeurons-4:
+            if sensorNum < c.numSensorNeurons-5:
                 self.sensors[i].Get_Value(t)
             sensorNum += 1
         #  Find distnace to nearest object and set sensor neuron
-        nearestPos = .5**world.getNearestPosition()
+        nearestPos = .25**world.getNearestPosition()
         # print(world.getNearestPosition())
         self.sensors["nearest-obstacle"].Set_Value(t, nearestPos)
 
@@ -51,9 +53,11 @@ class ROBOT:
         position = self.GetXY()
         self.sensors["xPos"].Set_Value(t, position[0])
         self.sensors["yPos"].Set_Value(t, position[1])
+        self.sensors["CPG"].Set_Value(t, math.sin(t*c.CPG))
+        c.t = math.sin(t*c.CPG)
 
         # print(self.Get_Distance_To_Goal())
-        return [nearestPos, distance, position[0], position[1]]
+        return [nearestPos, distance, position[0], position[1], t]
 
     def Prepare_To_Act(self):
         self.motors = {}
@@ -100,3 +104,11 @@ class ROBOT:
         yDelta = position[1] - c.goal[1]
         distance = math.sqrt(xDelta**2+yDelta**2)
         return distance
+
+    def GetXYZ(self):
+        basePositionAndOrientation = p.getBasePositionAndOrientation(self.robot)
+        basePosition = basePositionAndOrientation[0]
+        xPosition = basePosition[0]
+        yPosition = basePosition[1]
+        zPosition = basePosition[2]
+        return [xPosition, yPosition, zPosition]

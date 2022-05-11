@@ -34,8 +34,8 @@ class SIMULATION:
         for i in range(c.simLength):
             if self.directOrGUI == 'GUI':
                 time.sleep(.01)
-                if i%10 == 0:
-                    line = self.getXY()
+                if i % 10 == 0:
+                    line = self.robot.GetXY()
                     # line = position[0] + "," + position[1]
                     writer.writerow(line)
             p.stepSimulation()
@@ -58,6 +58,9 @@ class SIMULATION:
 
     def getXY(self):
         return self.robot.GetXY()
+
+    def getXYZ(self):
+        return self.robot.GetXYZ()
 
     def SaveData(self):
         pass

@@ -66,7 +66,7 @@ class OPTOMIZED_SOLUTION:
 
     def Create_World(self):
         pyrosim.Start_SDF("world.sdf")
-        pyrosim.Send_Cube(name="goal", pos=[c.goal[0], c.goal[1], .5], size=[1, 1, 1], mass=.5)
+        # pyrosim.Send_Cube(name="goal", pos=[c.goal[0], c.goal[1], .5], size=[1, 1, 1], mass=.5)
         # randX = random.randint(1, c.goal[0]-1)
         # randY = random.randint(1, c.goal[1]-1)
         pyrosim.Send_Cube(name="obstacle", pos=[-3, 1.5, .25], size=[1,3,.5], mass=50.0)
@@ -147,7 +147,7 @@ class OPTOMIZED_SOLUTION:
         pyrosim.Send_Sensor_Neuron(name=5, linkName="goal")
         pyrosim.Send_Sensor_Neuron(name=6, linkName="xPos")
         pyrosim.Send_Sensor_Neuron(name=7, linkName="yPos")
-        pyrosim.Send_Hidden_Neuron(name=8)
+        pyrosim.Send_Sensor_Neuron(name=8, linkName="CPG")
         pyrosim.Send_Hidden_Neuron(name=9)
         pyrosim.Send_Hidden_Neuron(name=10)
         pyrosim.Send_Hidden_Neuron(name=11)
@@ -155,14 +155,15 @@ class OPTOMIZED_SOLUTION:
         pyrosim.Send_Hidden_Neuron(name=13)
         pyrosim.Send_Hidden_Neuron(name=14)
         pyrosim.Send_Hidden_Neuron(name=15)
-        pyrosim.Send_Motor_Neuron(name=16, jointName="Torso_upper-back-left")
-        pyrosim.Send_Motor_Neuron(name=17, jointName="Torso_upper-front-left")
-        pyrosim.Send_Motor_Neuron(name=18, jointName="Torso_upper-front-right")
-        pyrosim.Send_Motor_Neuron(name=19, jointName="Torso_upper-back-right")
-        pyrosim.Send_Motor_Neuron(name=20, jointName="upper-back-left_lower-back-left")
-        pyrosim.Send_Motor_Neuron(name=21, jointName="upper-front-left_lower-front-left")
-        pyrosim.Send_Motor_Neuron(name=22, jointName="upper-front-right_lower-front-right")
-        pyrosim.Send_Motor_Neuron(name=23, jointName="upper-back-right_lower-back-right")
+        pyrosim.Send_Hidden_Neuron(name=16)
+        pyrosim.Send_Motor_Neuron(name=17, jointName="Torso_upper-back-left")
+        pyrosim.Send_Motor_Neuron(name=18, jointName="Torso_upper-front-left")
+        pyrosim.Send_Motor_Neuron(name=19, jointName="Torso_upper-front-right")
+        pyrosim.Send_Motor_Neuron(name=20, jointName="Torso_upper-back-right")
+        pyrosim.Send_Motor_Neuron(name=21, jointName="upper-back-left_lower-back-left")
+        pyrosim.Send_Motor_Neuron(name=22, jointName="upper-front-left_lower-front-left")
+        pyrosim.Send_Motor_Neuron(name=23, jointName="upper-front-right_lower-front-right")
+        pyrosim.Send_Motor_Neuron(name=24, jointName="upper-back-right_lower-back-right")
 
         for currentRow in range(c.numSensorNeurons):
             for currentColumn in range(c.numHiddenNeuronsOne):
@@ -187,7 +188,7 @@ class OPTOMIZED_SOLUTION:
             time.sleep(0.01)
 
     def Mutate(self):
-        layer = random.randint(0,3)
+        layer = random.randint(0,2)
         if layer == 0:
             row = random.randint(0, c.numSensorNeurons - 1)
             col = random.randint(0, c.numHiddenNeuronsOne - 1)
